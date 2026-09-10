@@ -2041,7 +2041,10 @@ textarea:focus {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.75rem, 13vw, 4.8rem);
+    /* Keep each name intact while allowing the title to use two lines. */
+    flex-wrap: wrap;
+    row-gap: .06em;
+    font-size: clamp(2.25rem, 11vw, 4rem);
   }
 
 }
