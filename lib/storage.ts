@@ -1,10 +1,11 @@
 import path from 'path';
 
-// On Railway, set DATA_DIR to the path of the mounted Volume (for example /data).
+// Railway exposes the mount path of an attached Volume at runtime. DATA_DIR still
+// takes precedence so other hosts (and local development) can choose their own path.
 // Keeping this outside public/ means uploads are served through an API route instead
 // of relying on files added to the build-time public directory.
 export function getDataDir() {
-  return process.env.DATA_DIR || path.join(process.cwd(), 'data');
+  return process.env.DATA_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(process.cwd(), 'data');
 }
 
 export function getUploadDir() {
