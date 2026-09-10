@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 import { addMemory } from '@/lib/db';
+import { getUploadDir, uploadUrl } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    const uploadDir = getUploadDir();
     await fs.mkdir(uploadDir, { recursive: true });
 
     const photoUrls: string[] = [];
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
       const fileName = `${Date.now()}-${crypto.randomUUID()}${extensionFor(photo.type)}`;
       const bytes = Buffer.from(await photo.arrayBuffer());
       await fs.writeFile(path.join(uploadDir, fileName), bytes);
-      photoUrls.push(`/uploads/${fileName}`);
+      photoUrls.push(uploadUrl(fileName));
     }
 
     const id = addMemory({ name, relationship, message, photos: photoUrls });

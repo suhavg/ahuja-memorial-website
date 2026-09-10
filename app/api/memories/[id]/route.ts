@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { deleteMemory, getPhotoUrlsForMemory } from '@/lib/db';
 import { isAdmin } from '@/lib/admin';
+import { getUploadDir, isSafeUploadFileName } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
@@ -23,10 +24,11 @@ export async function DELETE(
   deleteMemory(id);
 
   for (const url of photoUrls) {
-    if (!url.startsWith('/uploads/')) continue;
+    if (!url.startsWith('/api/uploads/')) continue;
     const fileName = path.basename(url);
+    if (!isSafeUploadFileName(fileName)) continue;
     try {
-      await fs.unlink(path.join(process.cwd(), 'public', 'uploads', fileName));
+      await fs.unlink(path.join(getUploadDir(), fileName));
     } catch {
       // Ignore a missing image file; the database entry is already deleted.
     }

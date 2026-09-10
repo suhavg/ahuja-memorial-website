@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
+import { getDataDir } from '@/lib/storage';
 
 export type Memory = {
   id: number;
@@ -16,7 +17,7 @@ let db: Database.Database | null = null;
 export function getDb() {
   if (db) return db;
 
-  const dataDir = path.join(process.cwd(), 'data');
+  const dataDir = getDataDir();
   fs.mkdirSync(dataDir, { recursive: true });
 
   db = new Database(path.join(dataDir, 'memorial.db'));
