@@ -2055,11 +2055,14 @@ textarea:focus {
 
 @media (max-width: 700px) {
   .tribute-tabs {
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
     padding: 0;
   }
 
   .tribute-tab {
+    min-width: 0;
     padding: 14px 8px;
     font-size: clamp(.98rem, 4vw, 1.15rem);
   }

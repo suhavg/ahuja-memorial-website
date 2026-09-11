@@ -16,6 +16,10 @@ const originalGallery = [
   'https://cdn.tribute-media.com/gallery/min/page-6544-4p2d880h1php1lp8p13kgi1mfj-1788987217.jpg',
   'https://cdn.tribute-media.com/gallery/min/page-6544-4p2d880h1php1lp8p13kgi1mfj-1788987208.jpg',
   'https://cdn.tribute-media.com/gallery/min/page-6544-4p2d880h1php1lp8p13kgi1mfj-1788987201.jpg',
+  ...Array.from(
+    { length: 244 },
+    (_, index) => `/gallery/memory-${String(index + 1).padStart(3, '0')}.jpg`
+  ),
 ];
 
 export default function HomePage() {
