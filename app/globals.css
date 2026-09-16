@@ -1466,6 +1466,8 @@ textarea:focus {
   height: min(780px, calc(100dvh - 36px));
   max-height: 92vh;
   overflow: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
   border-radius: 28px;
   background: #f8f4ee;
   box-shadow: 0 28px 80px rgba(63, 50, 34, .18);
@@ -1623,6 +1625,7 @@ textarea:focus {
 
 .contribution-story {
   min-width: 0;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: clamp(42px, 4vw, 64px) clamp(30px, 3.4vw, 52px);
@@ -1839,21 +1842,8 @@ textarea:focus {
    ========================================================= */
 
 @media (max-width: 900px) {
-  .contribution-modal-shell-text-only {
-    width: calc(100vw - 20px);
-    height: auto;
-    max-height: 92dvh;
-    grid-template-rows: none;
-  }
-
   .contribution-modal-shell-text-only .contribution-story {
     padding: 58px 24px 34px;
-  }
-
-  .contribution-modal-shell-text-only .contribution-modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
   }
 
   .contribution-modal {
@@ -1861,13 +1851,19 @@ textarea:focus {
   }
 
   .contribution-modal-shell {
-    grid-template-columns: 1fr;
+    display: block;
     width: 100%;
-    height: min(96dvh, calc(100dvh - 20px));
-    max-height: 96vh;
+    height: auto;
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
     border-radius: 20px;
-    grid-template-rows: minmax(260px, 56dvh) minmax(0, 1fr);
-    overflow: hidden;
+    overflow-y: auto;
+  }
+
+  .contribution-stage {
+    flex: none;
+    height: 42vh;
+    height: 42dvh;
   }
 
   .contribution-stage > img {
@@ -1876,7 +1872,7 @@ textarea:focus {
 
   .contribution-story {
     padding: 28px 24px 34px;
-    overflow-y: auto;
+    overflow: visible;
   }
 
   .contribution-modal-close {

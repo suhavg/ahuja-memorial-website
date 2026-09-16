@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { Memory } from '@/lib/db';
 
 function prettyDate(value: string) {
@@ -28,6 +29,7 @@ type OpenContribution = {
 export default function MemoryWall({ memories }: { memories: Memory[] }) {
   const [openContribution, setOpenContribution] = useState<OpenContribution>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const isContributionOpen = openContribution !== null;
 
   const sortedMemories = useMemo(
     () =>
@@ -75,9 +77,21 @@ export default function MemoryWall({ memories }: { memories: Memory[] }) {
   }, [sortedMemories]);
 
   useEffect(() => {
-    if (!openContribution) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    if (!isContributionOpen) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const previous = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+    };
+    Object.assign(body.style, {
+      overflow: 'hidden',
+      position: 'fixed',
+      top: `-${scrollY}px`,
+      width: '100%',
+    });
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') setOpenContribution(null);
@@ -87,10 +101,14 @@ export default function MemoryWall({ memories }: { memories: Memory[] }) {
 
     window.addEventListener('keydown', onKeyDown);
     return () => {
-      document.body.style.overflow = previousOverflow;
+      Object.assign(body.style, previous);
+      const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, scrollY);
+      document.documentElement.style.scrollBehavior = previousScrollBehavior;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [openContribution]);
+  }, [isContributionOpen]);
 
   function openMemory(memory: Memory, index = 0) {
     setOpenContribution({ memory, index });
@@ -175,7 +193,7 @@ export default function MemoryWall({ memories }: { memories: Memory[] }) {
         <div className="empty-memory">No memories have been shared yet.</div>
       )}
 
-      {openContribution && (
+      {openContribution && createPortal(
         <div
           className="contribution-modal"
           role="dialog"
@@ -268,7 +286,8 @@ export default function MemoryWall({ memories }: { memories: Memory[] }) {
               )}
             </aside>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
